@@ -1,35 +1,65 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import React from "react";
+import { Tabs } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import colors from "../../theme/colors";
+import { FinancialProvider } from "../context/FinancialContext";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+    <FinancialProvider>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.secondary,
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Home",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="home" color={color} size={size ?? 28} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="risk"
+          options={{
+            title: "Risk",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="alert-circle" color={color} size={size ?? 28} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="analysis"
+          options={{
+            title: "Analysis",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="chart-pie" color={color} size={size ?? 28} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="coach"
+          options={{
+            title: "Coach",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="robot" color={color} size={size ?? 28} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="learn"
+          options={{
+            title: "Learn",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="book-open" color={color} size={size ?? 28} />
+            ),
+          }}
+        />
+      </Tabs>
+    </FinancialProvider>
   );
 }
