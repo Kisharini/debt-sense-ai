@@ -75,6 +75,7 @@ const lessons: Lesson[] = [
 export default function LearnScreen() {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [completedLessons, setCompletedLessons] = useState<Set<number>>(new Set());
+  const [selectedAnswers] = useState<Record<number, string>>({});
 
   const toggleExpand = (index: number) => {
     setExpanded(expanded === index ? null : index);
@@ -85,10 +86,10 @@ export default function LearnScreen() {
     if (!lesson.quiz) return;
 
     if (option === lesson.quiz.answer) {
-      Alert.alert("Correct ✅", "Great job! You've completed this lesson.");
+      Alert.alert("Correct ", "Great job! You've completed this lesson.");
       setCompletedLessons((prev) => new Set(prev).add(index));
     } else {
-      Alert.alert("Incorrect ❌", "Try again or review the lesson.");
+      Alert.alert("Incorrect ", "Try again or review the lesson.");
     }
   };
 
@@ -107,8 +108,8 @@ export default function LearnScreen() {
       {lessons.map((lesson, index) => (
         <View key={index} style={styles.card}>
           <TouchableOpacity onPress={() => toggleExpand(index)}>
-            <Text style={styles.cardTitle}>
-              {lesson.title} {completedLessons.has(index) ? "✅" : ""}
+            <Text style={[styles.cardTitle, completedLessons.has(index) && styles.completedTitle]}>
+              {lesson.title} {completedLessons.has(index) ? "" : ""}
             </Text>
           </TouchableOpacity>
 
@@ -116,26 +117,40 @@ export default function LearnScreen() {
             <View style={{ marginTop: 10 }}>
               <Text style={styles.cardContent}>{lesson.content}</Text>
 
-              {lesson.quiz && (
-                <View style={{ marginTop: 10 }}>
-                  <Text style={styles.quizQuestion}>{lesson.quiz.question}</Text>
-                  {lesson.quiz.options.map((opt, i) => (
-                    <TouchableOpacity
-                      key={i}
-                      style={styles.quizOption}
-                      onPress={() => handleQuiz(index, opt)}
-                    >
-                      <Text style={styles.quizOptionText}>{opt}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
-          )}
-        </View>
+          {lesson.quiz && (
+            <View style={{ marginTop: 10 }}>
+            <Text style={styles.quizQuestion}>{lesson.quiz?.question}</Text>
+            {lesson.quiz.options.map((opt, i) => {
+            const isSelected = selectedAnswers[index] === opt;
+            const isCorrect = opt === lesson.quiz?.answer;
+
+          return (
+            <TouchableOpacity
+             key={i}
+             style={[
+               styles.quizOption,
+                 isSelected && isCorrect && styles.correctOption,  
+                 isSelected && !isCorrect && styles.wrongOption,    
+          ]}
+          onPress={() => handleQuiz(index, opt)}
+        >
+          <Text style={[
+            styles.quizOptionText,
+            isSelected && styles.selectedOptionText            
+          ]}>
+            {opt}
+          </Text>
+        </TouchableOpacity>
+      );
+    })}
+  </View>
+)}
+</View>
+)}
+</View>
       ))}
-    </ScrollView>
-  );
+ </ScrollView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -160,4 +175,23 @@ const styles = StyleSheet.create({
   quizQuestion: { fontWeight: "bold", marginBottom: 8, marginTop: 10, color: colors.primary },
   quizOption: { padding: 10, backgroundColor: colors.highlight, borderRadius: 10, marginBottom: 5 },
   quizOptionText: { color: "#000" },
+  completedTitle: {
+    color: "green",
+  },
+  selectedOption: {
+    backgroundColor: "#4A90E2",
+    borderColor: "#2C5F8A"
+  },
+  selectedOptionText: {
+    color: "#fff",
+    fontWeight: 'bold'
+  }, 
+  correctOption: {
+    backgroundColor: "green",
+    borderColor: "#1e7e34",
+  },
+  wrongOption: {
+    backgroundColor: "red",
+    borderColor: "#bd2130"
+  }
 });
