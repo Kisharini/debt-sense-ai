@@ -88,7 +88,7 @@ export default function Analysis() {
           style={styles.input}
         />
         <TextInput
-          placeholder="Monthly Income"
+          placeholder="Monthly Income (student loans and pocket money are also included)"
           keyboardType="numeric"
           value={income}
           onChangeText={setIncome}
